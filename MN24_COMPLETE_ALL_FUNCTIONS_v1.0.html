@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<meta name="description" content="MN24 Complete — all local functions hub">
+<title>MN24 Complete</title>
+<style>
+:root{--bg:#020617;--p:#0f172a;--line:#1e293b;--g:#34d399;--c:#38bdf8;--t:#e2e8f0;--m:#64748b;--w:#fbbf24;--r:#f87171;--or:#fb923c;--pu:#a78bfa}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--t);font:12px/1.4 system-ui,-apple-system,sans-serif;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto}
+.hdr{padding:12px;background:linear-gradient(165deg,#1e3a8a 0%,#020617 72%);border-bottom:1px solid var(--line)}
+.planet{width:48px;height:48px;border-radius:50%;float:left;margin:0 10px 0 0;background:radial-gradient(circle at 35% 30%,#7dd3fc,#2563eb 45%,#166534 48%,#a3e635 78%);border:2px solid #1d4ed8;box-shadow:0 0 16px #3b82f644}
+.logo{font-weight:800;font-size:15px;line-height:1.2}
+.logo span{color:var(--g)}.logo em{color:var(--c);font-style:normal}
+.logo small{display:block;font-weight:500;font-size:9px;color:var(--m);margin-top:2px}
+.warn{clear:both;font-size:9px;color:#fde68a;background:#1c1408;border:1px solid #a16207;border-radius:8px;padding:7px;margin-top:10px;line-height:1.35}
+.tabs{display:flex;gap:2px;overflow-x:auto;padding:6px 6px 4px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+.tabs button{flex:0 0 auto;padding:7px 9px;border-radius:11px;border:1px solid var(--line);background:var(--p);color:var(--t);font-size:10px}
+.tabs button.on{border-color:var(--g);color:var(--g);background:#052e16}
+main{flex:1;overflow-y:auto;padding:8px 10px 14px;-webkit-overflow-scrolling:touch}
+.panel{background:var(--p);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+h2{margin:0 0 6px;font-size:13px;color:var(--c)}
+.muted{color:var(--m);font-size:10px;line-height:1.4}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.card{background:#020617;border:1px solid var(--line);border-radius:10px;padding:11px 8px;text-align:center;cursor:pointer}
+.card:active{border-color:var(--g);transform:scale(.98)}
+.card strong{display:block;font-size:11px}
+.card .sub{font-size:9px;color:var(--m);margin-top:3px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:11px}
+.item:last-child{border-bottom:0}
+.tag{font-size:8px;padding:2px 7px;border-radius:6px;border:1px solid var(--line);color:var(--m);white-space:nowrap}
+.tag.ok{border-color:var(--g);color:var(--g)}.tag.sim{border-color:var(--w);color:var(--w)}
+.tag.api{border-color:var(--pu);color:var(--pu)}.tag.pend{opacity:.7}
+.feed,.chat{max-height:170px;overflow-y:auto;background:#020617;border:1px solid var(--line);border-radius:10px;padding:8px;margin:6px 0}
+.post{border-bottom:1px solid var(--line);padding:7px 0;font-size:11px}
+.post:last-child{border-bottom:0}
+.post .who{font-weight:700;color:var(--c);font-size:10px}
+.msg{padding:6px 9px;margin:4px 0;border-radius:10px;background:#1e293b;font-size:11px;max-width:88%}
+.msg.me{background:#1e3a8a;margin-left:auto}
+.msg.sys{background:transparent;color:var(--m);text-align:center;font-size:9px;max-width:100%}
+.row{display:flex;gap:4px;align-items:center}
+input,textarea,button.btn,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#020617;color:var(--t);margin:3px 0;font:inherit}
+button.btn{background:linear-gradient(135deg,#34d399,#3b82f6);color:#031016;font-weight:700;border:none}
+button.btn.sec{background:#1e293b;color:var(--t);border:1px solid var(--line);font-weight:600}
+.dial{width:min(52vw,150px);aspect-ratio:1;margin:8px auto;border-radius:50%;border:3px solid #334155;background:conic-gradient(from 200deg,#f97316,#38bdf8,#eab308,#f97316);padding:3px}
+.dial-in{width:100%;height:100%;border-radius:50%;background:#020617;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dial .t{font-size:22px;font-weight:800}
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-top:8px;text-align:center}
+.metrics div{background:#020617;border:1px solid var(--line);border-radius:10px;padding:8px 4px}
+.metrics strong{display:block;font-size:12px;color:var(--g)}
+.metrics span{font-size:8px;color:var(--m)}
+.cam{width:64px;height:64px;border-radius:50%;border:3px solid var(--or);background:#1c1008;color:var(--or);font-size:22px;display:flex;align-items:center;justify-content:center;margin:8px auto}
+.ptt{width:78px;height:78px;border-radius:50%;border:3px solid var(--line);background:radial-gradient(circle at 35% 30%,#334155,#0f172a);color:var(--t);font-weight:800;display:block;margin:8px auto}
+.ptt.on{border-color:var(--r);background:radial-gradient(circle at 35% 30%,#991b1b,#450a0a);color:#fecaca}
+.ch{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.ch button{padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:#020617;color:var(--t);font-size:10px}
+.ch button.on{border-color:var(--g);color:var(--g)}
+audio,video{width:100%;margin:6px 0;border-radius:8px;background:#000}
+.log{font-family:ui-monospace,Menlo,monospace;font-size:9px;background:#020617;border:1px solid var(--line);border-radius:8px;padding:8px;max-height:110px;overflow-y:auto;white-space:pre-wrap;color:#94a3b8}
+.flow{font-family:ui-monospace,monospace;font-size:9px;background:#020617;border:1px solid var(--line);border-radius:8px;padding:8px;line-height:1.5}
+.cont{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+.cont span{padding:4px 9px;border-radius:999px;border:1px solid #1e40af;font-size:9px;color:#93c5fd;background:#0f172a}
+footer{font-size:8px;text-align:center;color:var(--m);padding:5px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="planet" aria-hidden="true"></div>
+    <div class="logo"><span>MN24</span> <em>COMPLETE</em>
+      <small>All local functions · Planet Earth hub</small>
+    </div>
+    <div class="warn">Máximo empaquetado local posible en un APK sideload. Social/chat/media/notas = en el dispositivo. Redes globales, pagos y correo reales requieren OAuth. BT/radio/watch = UI o demo, no RF ni chip LiFi.</div>
+  </div>
+  <div class="tabs" id="tabs" role="tablist">
+    <button class="on" data-v="home">CORE</button>
+    <button data-v="social">Social</button>
+    <button data-v="msg">💬</button>
+    <button data-v="ai">IA</button>
+    <button data-v="mail">📧</button>
+    <button data-v="pay">Pay</button>
+    <button data-v="media">🎵</button>
+    <button data-v="wear">⌚</button>
+    <button data-v="cam">📷</button>
+    <button data-v="radio">📻</button>
+    <button data-v="bt">BT</button>
+    <button data-v="wifi">Wi‑Fi</button>
+    <button data-v="web">API</button>
+    <button data-v="notes">Notes</button>
+    <button data-v="status">Estado</button>
+  </div>
+  <main id="main"></main>
+  <footer>MN24 COMPLETE · PLAN→VALIDATE→APPROVE→EXECUTE→TEST→AUDIT→RESULT</footer>
+</div>
+<script>
+const KEY='mn24_complete_v1';
+const ST={
+  v:'home',user:'Explorer',ch:'CH-1',
+  posts:[],msgs:[],notes:'',btLog:[],paired:[],
+  steps:1569,bpm:72,bat:95
+};
+const PLATFORMS={
+  social:[['WhatsApp','API'],['Instagram','API'],['Facebook','API'],['Discord','API'],['Reddit','API'],['TikTok','API'],['Snapchat','API'],['Bluesky','API'],['WeChat','API']],
+  mail:[['Gmail','API'],['Outlook','API'],['Proton','API'],['MN24 Mail','Pendiente']],
+  pay:[['PayPal','API'],['Stripe','API'],['MN24 PAY','Pendiente'],['Checkout demo','Local']],
+  ai:[['ORION local','Local'],['MN24 CORE','Local'],['OpenAI Codex','API'],['Claude Code','API']]
+};
+const DEVICES=[
+  {id:'watch',name:'Smartwatch / Wear'},
+  {id:'radio',name:'DEP 450 (audio BT)'},
+  {id:'buds',name:'Auriculares BT'},
+  {id:'phone',name:'Teléfono hub'}
+];
+
+function load(){
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY)||'{}');
+    if(s.posts)ST.posts=s.posts;
+    if(s.msgs)ST.msgs=s.msgs;
+    if(s.notes!=null)ST.notes=s.notes;
+    if(s.paired)ST.paired=s.paired;
+    if(s.user)ST.user=s.user;
+    if(s.ch)ST.ch=s.ch;
+  }catch(e){}
+  if(!ST.posts.length){
+    ST.posts=[
+      {who:'MN24 CORE',when:'sistema',body:'Hub completo local. Publica, chatea y guarda notas offline.'},
+      {who:'Wear Lab',when:'demo',body:'Companion watch + cámara UI + PTT simulado.'}
+    ];
+  }
+}
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify({
+      posts:ST.posts.slice(-50),
+      msgs:ST.msgs.slice(-100),
+      notes:String(ST.notes||'').slice(0,8000),
+      paired:ST.paired.slice(-12),
+      user:ST.user,ch:ST.ch
+    }));
+  }catch(e){}
+}
+load();
+
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n};
+const now=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+const logBT=m=>{ST.btLog.push(now()+' · '+m);if(ST.btLog.length>30)ST.btLog.shift()};
+
+function tagFor(s){
+  if(/Local|Implementado|OK/i.test(s))return 'ok';
+  if(/Sim/i.test(s))return 'sim';
+  if(/API|OAuth|Requiere/i.test(s))return 'api';
+  return 'pend';
+}
+
+function render(){
+  [...$('tabs').children].forEach(b=>b.classList.toggle('on',b.dataset.v===ST.v));
+  const m=$('main'); m.innerHTML='';
+
+  if(ST.v==='home'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'MN24 COMPLETE'));
+    p.appendChild(el('p','muted','Usuario → CORE → Orchestrator → módulos locales / APIs externas'));
+    const cont=el('div','cont');
+    ['América','Europa','África','Asia','Oceanía'].forEach(c=>{const s=document.createElement('span');s.textContent=c;cont.appendChild(s)});
+    p.appendChild(cont);
+    const g=el('div','grid');
+    const tiles=[
+      ['Social','social'],['Messenger','msg'],['IA / ORION','ai'],['Correo','mail'],
+      ['Pagos','pay'],['Multimedia','media'],['Watch','wear'],['Cámara','cam'],
+      ['Radio','radio'],['Bluetooth','bt'],['Wi‑Fi','wifi'],['API / Web','web']
+    ];
+    tiles.forEach(([lab,v])=>{
+      const c=el('div','card');
+      c.innerHTML='<strong>'+lab+'</strong><div class="sub">abrir</div>';
+      c.onclick=()=>{ST.v=v;render()};
+      g.appendChild(c);
+    });
+    p.appendChild(g);
+    const f=el('div','flow');
+    f.textContent='PLAN → VALIDATE → APPROVE → EXECUTE → TEST → AUDIT → RESULT';
+    p.appendChild(f);
+    m.appendChild(p);
+  }
+
+  else if(ST.v==='social'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Redes (catálogo)'));
+    p.appendChild(el('p','muted','Abrir en navegador o integrar con OAuth propio.'));
+    PLATFORMS.social.forEach(([n,s])=>{
+      const i=el('div','item'); i.appendChild(el('strong',null,n));
+      i.appendChild(el('span','tag '+tagFor(s),s)); p.appendChild(i);
+    });
+    p.appendChild(el('h2',null,'Feed local'));
+    const feed=el('div','feed');
+    ST.posts.slice().reverse().forEach((x,idx)=>{
+      const post=el('div','post');
+      const i=ST.posts.length-1-idx;
+      post.innerHTML='<div class="who"></div><div class="muted"></div><div></div>';
+      post.children[0].textContent=x.who;
+      post.children[1].textContent=x.when||'';
+      post.children[2].textContent=x.body;
+      post.onclick=()=>{x.likes=(x.likes||0)+1;save();};
+      feed.appendChild(post);
+    });
+    p.appendChild(feed);
+    const ta=document.createElement('textarea'); ta.rows=2; ta.placeholder='Publicar en feed local…';
+    const btn=el('button','btn','Publicar');
+    btn.onclick=()=>{const t=ta.value.trim();if(!t)return;ST.posts.push({who:ST.user,when:now(),body:t,likes:0});save();ta.value='';render()};
+    p.appendChild(ta); p.appendChild(btn); m.appendChild(p);
+  }
+
+  else if(ST.v==='msg'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Messenger local'));
+    const chat=el('div','chat');
+    chat.appendChild(Object.assign(el('div','msg sys'),{textContent:'Sala MN24 · offline'}));
+    ST.msgs.forEach(x=>{const d=el('div','msg'+(x.me?' me':''));d.textContent=x.text;chat.appendChild(d)});
+    p.appendChild(chat);
+    const row=el('div','row');
+    const inp=document.createElement('input'); inp.placeholder='Mensaje…'; inp.style.flex='1';
+    const send=el('button','btn','Enviar'); send.style.width='auto'; send.style.padding='10px 14px';
+    const go=()=>{const t=inp.value.trim();if(!t)return;ST.msgs.push({me:true,text:t});save();inp.value='';render()};
+    send.onclick=go; inp.onkeydown=e=>{if(e.key==='Enter')go()};
+    row.appendChild(inp); row.appendChild(send); p.appendChild(row); m.appendChild(p);
+  }
+
+  else if(ST.v==='ai'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'IA / Orchestrator'));
+    PLATFORMS.ai.forEach(([n,s])=>{
+      const i=el('div','item'); i.appendChild(el('strong',null,n));
+      i.appendChild(el('span','tag '+tagFor(s),s)); p.appendChild(i);
+    });
+    const ta=document.createElement('textarea'); ta.rows=3; ta.placeholder='Nota para ORION (planificación local)…';
+    const out=el('div','post'); out.textContent='ORION local: guarda planes aquí. Sin llamadas a OpenAI/Claude hasta configurar API keys en un backend.';
+    const btn=el('button','btn','Guardar en memoria local');
+    btn.onclick=()=>{const t=ta.value.trim();if(!t)return;out.textContent='ORION: '+t;ST.msgs.push({me:true,text:'[IA] '+t});save()};
+    p.appendChild(ta); p.appendChild(btn); p.appendChild(out); m.appendChild(p);
+  }
+
+  else if(ST.v==='mail'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Correo'));
+    p.appendChild(el('p','muted','Borradores locales. Envío real = OAuth Gmail/Outlook.'));
+    PLATFORMS.mail.forEach(([n,s])=>{
+      const i=el('div','item'); i.appendChild(el('strong',null,n));
+      i.appendChild(el('span','tag '+tagFor(s),s)); p.appendChild(i);
+    });
+    const sub=document.createElement('input'); sub.placeholder='Asunto';
+    const body=document.createElement('textarea'); body.rows=3; body.placeholder='Cuerpo…';
+    const out=el('p','muted');
+    const btn=el('button','btn','Guardar borrador local');
+    btn.onclick=()=>{out.textContent='Borrador «'+(sub.value||'sin asunto')+'» guardado (no enviado).'};
+    p.appendChild(sub); p.appendChild(body); p.appendChild(btn); p.appendChild(out); m.appendChild(p);
+  }
+
+  else if(ST.v==='pay'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Pagos'));
+    PLATFORMS.pay.forEach(([n,s])=>{
+      const i=el('div','item'); i.appendChild(el('strong',null,n));
+      i.appendChild(el('span','tag '+tagFor(s),s)); p.appendChild(i);
+    });
+    const out=el('p','muted');
+    const btn=el('button','btn','Simular checkout MN24');
+    btn.onclick=()=>{out.textContent='Pedido demo #'+Date.now().toString().slice(-6)+' · sin cobro real';};
+    p.appendChild(btn); p.appendChild(out); m.appendChild(p);
+  }
+
+  else if(ST.v==='media'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Multimedia'));
+    p.appendChild(el('p','muted','Elige archivos del teléfono. No se empaquetan obras con copyright.'));
+    const ia=document.createElement('input'); ia.type='file'; ia.accept='audio/*';
+    const au=document.createElement('audio'); au.controls=true; au.preload='metadata';
+    ia.onchange=()=>{const f=ia.files&&ia.files[0];if(f)au.src=URL.createObjectURL(f)};
+    const iv=document.createElement('input'); iv.type='file'; iv.accept='video/*';
+    const vi=document.createElement('video'); vi.controls=true; vi.playsInline=true; vi.preload='metadata';
+    iv.onchange=()=>{const f=iv.files&&iv.files[0];if(f)vi.src=URL.createObjectURL(f)};
+    p.appendChild(el('p','muted','Audio')); p.appendChild(ia); p.appendChild(au);
+    p.appendChild(el('p','muted','Video')); p.appendChild(iv); p.appendChild(vi);
+    m.appendChild(p);
+  }
+
+  else if(ST.v==='wear'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Smartwatch / Wearables'));
+    const d=el('div','dial');
+    d.innerHTML='<div class="dial-in"><div class="t" id="clk">--:--</div><div class="muted">companion</div></div>';
+    p.appendChild(d);
+    const met=el('div','metrics');
+    met.innerHTML='<div><strong>'+ST.steps+'</strong><span>STEPS</span></div><div><strong>'+ST.bpm+'</strong><span>BPM</span></div><div><strong>'+ST.bat+'%</strong><span>BAT</span></div>';
+    p.appendChild(met);
+    p.appendChild(el('p','muted','UI circular. Sensores reales = app del fabricante / BLE nativo.'));
+    m.appendChild(p);
+  }
+
+  else if(ST.v==='cam'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Cámara remota'));
+    p.appendChild(el('p','muted','Fotos · Demora · 1p · Seguido / Apagado'));
+    const cam=el('div','cam'); cam.textContent='📷'; p.appendChild(cam);
+    const g=el('div','grid');
+    ['Fotos','Demora 1p','Seguido','Apagado'].forEach(x=>{
+      const c=el('div','card'); c.innerHTML='<strong>'+x+'</strong>'; g.appendChild(c);
+    });
+    p.appendChild(g); m.appendChild(p);
+  }
+
+  else if(ST.v==='radio'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Motorola DEP 450'));
+    p.appendChild(el('p','muted','PTT simulado · sin transmisión RF'));
+    const ch=el('div','ch');
+    ['CH-1','CH-2','CH-3','CH-4'].forEach(c=>{
+      const b=document.createElement('button'); b.textContent=c;
+      if(c===ST.ch)b.className='on';
+      b.onclick=()=>{ST.ch=c;save();render()};
+      ch.appendChild(b);
+    });
+    p.appendChild(ch);
+    const btn=el('button','ptt','PTT');
+    const down=()=>{btn.classList.add('on');btn.textContent='TX '+ST.ch};
+    const up=()=>{btn.classList.remove('on');btn.textContent='PTT'};
+    ['touchstart','mousedown'].forEach(e=>btn.addEventListener(e,ev=>{ev.preventDefault();down()}));
+    ['touchend','mouseup','mouseleave'].forEach(e=>btn.addEventListener(e,ev=>{ev.preventDefault();up()}));
+    p.appendChild(btn);
+    p.appendChild(el('span','tag sim','Simulación'));
+    m.appendChild(p);
+  }
+
+  else if(ST.v==='bt'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Bluetooth'));
+    p.appendChild(el('p','muted','Demo de lista. BLE de sistema requiere APIs nativas.'));
+    const scan=el('button','btn','Simular escaneo');
+    const list=el('div','');
+    const log=el('div','log');
+    function paint(){
+      list.innerHTML='';
+      DEVICES.forEach(d=>{
+        const i=el('div','item');
+        i.appendChild(el('strong',null,d.name));
+        const paired=ST.paired.includes(d.id);
+        const b=el('button','btn'+(paired?' sec':''),paired?'Conectado':'Emparejar');
+        b.style.width='auto'; b.style.padding='6px 10px'; b.style.fontSize='10px';
+        b.onclick=()=>{
+          if(paired){ST.paired=ST.paired.filter(x=>x!==d.id);logBT('Off '+d.name);}
+          else{ST.paired.push(d.id);logBT('On '+d.name);}
+          save();render();
+        };
+        i.appendChild(b); list.appendChild(i);
+      });
+      log.textContent=ST.btLog.slice(-10).join('\n')||'Sin eventos';
+    }
+    scan.onclick=()=>{logBT('Escaneo demo…');DEVICES.forEach(d=>logBT('Visto '+d.name));render()};
+    p.appendChild(scan); p.appendChild(list); p.appendChild(log);
+    paint(); m.appendChild(p);
+  }
+
+  else if(ST.v==='wifi'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Wi‑Fi / red'));
+    p.appendChild(el('p','muted','Diagnóstico WebView. Activar Wi‑Fi del sistema: Termux:API.'));
+    const rows=el('div','');
+    const online=navigator.onLine;
+    [['Navigator online',online?'Sí':'No'],
+     ['Tipo', (navigator.connection&& (navigator.connection.effectiveType||navigator.connection.type))||'—']
+    ].forEach(([a,b])=>{
+      const i=el('div','item'); i.appendChild(el('strong',null,a)); i.appendChild(el('span',null,b)); rows.appendChild(i);
+    });
+    p.appendChild(rows);
+    const out=el('div','log'); out.textContent='Pulsa actualizar…';
+    const btn=el('button','btn','Actualizar + IP pública');
+    btn.onclick=async()=>{
+      out.textContent='online='+navigator.onLine+'\n';
+      if(!navigator.onLine){out.textContent+='Sin red';return;}
+      try{
+        const r=await fetch('https://api.ipify.org?format=json',{cache:'no-store'});
+        const j=await r.json();
+        out.textContent+='IP pública: '+j.ip;
+      }catch(e){out.textContent+='Error: '+e.message}
+    };
+    p.appendChild(btn); p.appendChild(out);
+    const pre=el('div','log');
+    pre.textContent='Termux:\npkg install termux-api\ntermux-wifi-connectioninfo\ntermux-wifi-scaninfo';
+    p.appendChild(pre); m.appendChild(p);
+  }
+
+  else if(ST.v==='web'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'API / servicios web'));
+    [['HTTPS','Base'],['REST','Diseño'],['WebSockets','Pendiente prod'],['OAuth 2.0','Por proveedor'],['PWA','Este HTML']].forEach(([n,s])=>{
+      const i=el('div','item'); i.appendChild(el('strong',null,n));
+      i.appendChild(el('span','tag pend',s)); p.appendChild(i);
+    });
+    const inp=document.createElement('input'); inp.placeholder='URL API ej. http://192.168.1.10:8000';
+    const out=el('div','log');
+    const btn=el('button','btn','GET /v1/health');
+    btn.onclick=async()=>{
+      const u=(inp.value||'').replace(/\/$/,'');
+      if(!u){out.textContent='Indica URL';return;}
+      try{const r=await fetch(u+'/v1/health');out.textContent=JSON.stringify(await r.json(),null,2);}
+      catch(e){out.textContent=String(e.message);}
+    };
+    p.appendChild(inp); p.appendChild(btn); p.appendChild(out); m.appendChild(p);
+  }
+
+  else if(ST.v==='notes'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Notas / vault local'));
+    const ta=document.createElement('textarea'); ta.rows=10; ta.placeholder='Notas offline…'; ta.value=ST.notes||'';
+    const btn=el('button','btn','Guardar');
+    const out=el('p','muted');
+    btn.onclick=()=>{ST.notes=ta.value;save();out.textContent='Guardado '+now()};
+    p.appendChild(ta); p.appendChild(btn); p.appendChild(out); m.appendChild(p);
+  }
+
+  else if(ST.v==='status'){
+    const p=el('div','panel');
+    p.appendChild(el('h2',null,'Estado · honest matrix'));
+    [
+      ['Hub CORE multi-módulo UI','Implementado'],
+      ['Social feed + Messenger + Notes','Implementado'],
+      ['Media archivos locales','Implementado'],
+      ['Watch / cámara / radio UI','Implementado'],
+      ['Wi‑Fi diagnóstico + IP','Implementado'],
+      ['BT lista demo','Simulado'],
+      ['Checkout / borrador mail','Simulado'],
+      ['OAuth Meta/Google/PayPal','Requiere cuentas'],
+      ['BLE / RF / LiFi hardware','Pendiente / N/A'],
+      ['Backend FastAPI producción','Pendiente']
+    ].forEach(([a,b])=>{
+      const i=el('div','item'); i.appendChild(el('strong',null,a));
+      i.appendChild(el('span','tag '+tagFor(b),b)); p.appendChild(i);
+    });
+    m.appendChild(p);
+  }
+}
+
+$('tabs').onclick=e=>{
+  const b=e.target.closest('[data-v]');
+  if(!b)return;
+  ST.v=b.dataset.v;
+  render();
+};
+render();
+setInterval(()=>{const c=$('clk');if(c)c.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})},1000);
+</script>
+</body>
+</html>
